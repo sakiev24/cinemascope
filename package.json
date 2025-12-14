@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "build": "tsc -b && vite build && copy dist\\index.html dist\\404.html",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "api": "json-server --watch db.json --port 3001",
     "deploy": "npm run build && gh-pages -d dist"

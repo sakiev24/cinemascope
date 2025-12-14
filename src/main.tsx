@@ -1,13 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'  // <-- CHANGED TO HashRouter
+import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <HashRouter basename="/cinemascope">  {/* Still keep basename */}
+    <BrowserRouter basename="/cinemascope">
       <App />
-    </HashRouter>
+    </BrowserRouter>
   </StrictMode>,
 )
