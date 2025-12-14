@@ -1,5 +1,6 @@
 {
-  "name": "reel-review",
+  "name": "cinemascope",
+  "homepage": "https://sakiev24.github.io/cinemascope",
   "private": true,
   "version": "0.0.0",
   "type": "module",
