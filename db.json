@@ -1,0 +1,36 @@
+{
+  "reviews": [
+    {
+      "id": "0a32",
+      "movieId": 68718,
+      "rating": 5,
+      "text": "Good movie",
+      "author": "Emir",
+      "timestamp": "2025-12-14T13:09:36.096Z"
+    },
+    {
+      "id": "93db",
+      "movieId": 1054867,
+      "rating": 2,
+      "text": "bad movie, didnt like the script",
+      "author": "Jusik",
+      "timestamp": "2025-12-14T15:03:43.032Z"
+    },
+    {
+      "id": "4177",
+      "movieId": 812583,
+      "rating": 5,
+      "text": "great movie! love the casting here",
+      "author": "Emir",
+      "timestamp": "2025-12-14T15:35:02.747Z"
+    },
+    {
+      "id": "b7b9",
+      "movieId": 203101,
+      "rating": 5,
+      "text": "jerked off to this. unfortunately hold it for 5 secs. unforgetable experience!!!!!!",
+      "author": "aizhigit",
+      "timestamp": "2025-12-14T15:43:19.821Z"
+    }
+  ]
+}
