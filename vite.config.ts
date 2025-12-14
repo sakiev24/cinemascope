@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/cinemascope/', // Replace 'Letterboxd' with your actual GitHub repo name
+  base: './', // Replace 'Letterboxd' with your actual GitHub repo name
 })
