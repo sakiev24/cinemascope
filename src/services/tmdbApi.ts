@@ -1,15 +1,15 @@
 import axios from 'axios';
 import type { Movie, MovieDetails, Genre, TMDBResponse, GenresResponse } from '../types';
 
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+// With a proxy configured, the key lives server-side and the browser never sees it.
+const TMDB_PROXY_URL = import.meta.env.VITE_TMDB_PROXY_URL as string | undefined;
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY as string | undefined;
 
-const tmdbClient = axios.create({
-    baseURL: TMDB_BASE_URL,
-    params: {
-        api_key: TMDB_API_KEY,
-    },
-});
+const tmdbClient = axios.create(
+    TMDB_PROXY_URL
+        ? { baseURL: TMDB_PROXY_URL.replace(/\/$/, '') }
+        : { baseURL: 'https://api.themoviedb.org/3', params: { api_key: TMDB_API_KEY } }
+);
 
 export const getTrendingMovies = async (): Promise<Movie[]> => {
     const response = await tmdbClient.get<TMDBResponse<Movie>>('/trending/movie/week');

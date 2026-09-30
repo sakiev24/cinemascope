@@ -111,6 +111,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
                     onChange={(e) => setAuthor(e.target.value)}
                     className="w-full rounded-xl border-2 border-transparent bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
                     placeholder="e.g. Alex"
+                    maxLength={40}
                     aria-invalid={!!errors.author}
                 />
                 {errors.author && <p className="mt-1.5 text-xs font-semibold">⚠ {errors.author}</p>}
@@ -125,6 +126,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     rows={5}
+                    maxLength={1000}
                     className="w-full resize-none rounded-xl border-2 border-transparent bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
                     placeholder="What stayed with you after the credits rolled?"
                     aria-invalid={!!errors.text}

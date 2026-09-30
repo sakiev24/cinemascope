@@ -4,9 +4,26 @@ const STORAGE_KEY = 'cinemascope_reviews';
 const MOCK_DELAY = 500; // Simulate network delay
 
 // Helper to get reviews from storage
+// Storage can be blocked, cleared or hand-edited, so never trust its shape
 const getStoredReviews = (): Review[] => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    try {
+        const parsed: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
+        return Array.isArray(parsed) ? (parsed as Review[]).filter(isReview) : [];
+    } catch {
+        return [];
+    }
+};
+
+const isReview = (r: unknown): r is Review => {
+    const x = r as Review;
+    return (
+        !!x &&
+        typeof x.movieId === 'number' &&
+        typeof x.rating === 'number' &&
+        typeof x.text === 'string' &&
+        typeof x.author === 'string' &&
+        typeof x.timestamp === 'string'
+    );
 };
 
 // Helper to save reviews to storage
