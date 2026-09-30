@@ -46,6 +46,67 @@
   }
 }
 
+@layer components {
+  /* Floating nav pill: frosted white at rest, liquid glass once the page scrolls */
+  .nav-pill {
+    position: relative;
+    isolation: isolate;
+    transition:
+      background 400ms ease,
+      border-color 400ms ease,
+      box-shadow 400ms ease,
+      -webkit-backdrop-filter 400ms ease,
+      backdrop-filter 400ms ease;
+  }
+
+  /* Specular rim: a gradient drawn only on the 1px edge via mask compositing */
+  .nav-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.7) 0%,
+        rgba(255, 255, 255, 0.08) 35%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(248, 198, 30, 0.45) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    pointer-events: none;
+  }
+
+  .nav-pill.is-glass {
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.14) 0%,
+        rgba(255, 255, 255, 0.04) 50%,
+        rgba(255, 255, 255, 0.09) 100%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+      inset 0 0 24px rgba(255, 255, 255, 0.04),
+      0 8px 32px rgba(0, 0, 0, 0.37);
+  }
+
+  .nav-pill.is-glass::before {
+    opacity: 1;
+  }
+
+  /* Browsers without backdrop-filter get a solid tint so links stay readable */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav-pill.is-glass {
+      background: rgba(37, 44, 55, 0.92);
+    }
+  }
+}
+
 @layer utilities {
   .no-scrollbar {
     scrollbar-width: none;
