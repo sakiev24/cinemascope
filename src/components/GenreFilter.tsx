@@ -3,12 +3,17 @@ import { getGenres } from '../services/tmdbApi';
 import type { Genre } from '../types';
 
 interface GenreFilterProps {
+    selected: number | null;
     onFilterChange: (genreId: number | null) => void;
+    disabled?: boolean;
 }
 
-const GenreFilter: React.FC<GenreFilterProps> = ({ onFilterChange }) => {
+const chip = 'shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40';
+const chipIdle = 'bg-midnight-700 text-midnight-100 hover:bg-midnight-600 hover:text-white';
+const chipActive = 'bg-sunburst text-midnight';
+
+const GenreFilter: React.FC<GenreFilterProps> = ({ selected, onFilterChange, disabled = false }) => {
     const [genres, setGenres] = useState<Genre[]>([]);
-    const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchGenres = async () => {
@@ -22,31 +27,27 @@ const GenreFilter: React.FC<GenreFilterProps> = ({ onFilterChange }) => {
         fetchGenres();
     }, []);
 
-    const handleGenreClick = (genreId: number) => {
-        const newGenre = selectedGenre === genreId ? null : genreId;
-        setSelectedGenre(newGenre);
-        onFilterChange(newGenre);
-    };
-
     return (
-        <div className="bg-light-surface dark:bg-dark-surface rounded-lg p-4 border border-light-border dark:border-dark-border">
-            <h3 className="text-lg font-semibold text-light-text dark:text-dark-text mb-4">
-                Genres
-            </h3>
-            <div className="space-y-2">
-                {genres.map((genre) => (
-                    <button
-                        key={genre.id}
-                        onClick={() => handleGenreClick(genre.id)}
-                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 ${selectedGenre === genre.id
-                                ? 'bg-light-accent dark:bg-dark-accent text-white'
-                                : 'text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-border dark:hover:bg-dark-border'
-                            }`}
-                    >
-                        {genre.name}
-                    </button>
-                ))}
-            </div>
+        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+            <button
+                onClick={() => onFilterChange(null)}
+                disabled={disabled}
+                aria-pressed={selected === null}
+                className={`${chip} ${selected === null ? chipActive : chipIdle}`}
+            >
+                All
+            </button>
+            {genres.map((genre) => (
+                <button
+                    key={genre.id}
+                    onClick={() => onFilterChange(selected === genre.id ? null : genre.id)}
+                    disabled={disabled}
+                    aria-pressed={selected === genre.id}
+                    className={`${chip} ${selected === genre.id ? chipActive : chipIdle}`}
+                >
+                    {genre.name}
+                </button>
+            ))}
         </div>
     );
 };

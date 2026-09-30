@@ -21,6 +21,16 @@ export const getPopularMovies = async (): Promise<Movie[]> => {
     return response.data.results;
 };
 
+export const getTopRatedMovies = async (): Promise<Movie[]> => {
+    const response = await tmdbClient.get<TMDBResponse<Movie>>('/movie/top_rated');
+    return response.data.results;
+};
+
+export const getNowPlayingMovies = async (): Promise<Movie[]> => {
+    const response = await tmdbClient.get<TMDBResponse<Movie>>('/movie/now_playing');
+    return response.data.results;
+};
+
 export const getMovieDetails = async (id: number): Promise<MovieDetails> => {
     const response = await tmdbClient.get<MovieDetails>(`/movie/${id}`);
     return response.data;
@@ -46,7 +56,10 @@ export const getMoviesByGenre = async (genreId: number): Promise<Movie[]> => {
     return response.data.results;
 };
 
-export const getImageUrl = (path: string | null, size: 'w500' | 'original' = 'w500'): string => {
-    if (!path) return 'https://via.placeholder.com/500x750?text=No+Image';
+export type ImageSize = 'w300' | 'w500' | 'w780' | 'w1280' | 'original';
+
+// Returns null when TMDB has no image, so callers can render their own fallback
+export const getImageUrl = (path: string | null, size: ImageSize = 'w500'): string | null => {
+    if (!path) return null;
     return `https://image.tmdb.org/t/p/${size}${path}`;
 };

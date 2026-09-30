@@ -1,19 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    color-scheme: dark;
+  }
+
   body {
-    @apply font-sans antialiased;
+    @apply bg-midnight font-sans text-white antialiased;
+  }
+
+  ::selection {
+    @apply bg-sunburst text-midnight;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-sunburst ring-offset-2 ring-offset-midnight;
+  }
+}
+
+@layer components {
+  /* Wide-tracked uppercase label, like the hex codes in the brand sheet */
+  .label {
+    @apply text-xs font-medium uppercase tracking-label;
+  }
+
+  /* Heavy, tight display type, like SUNBURST / MIDNIGHT */
+  .display {
+    @apply font-extrabold uppercase leading-[0.9] tracking-tight;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-midnight-600 bg-midnight-900 px-4 py-3 text-sm text-white placeholder:text-midnight-300 transition-colors focus:border-sunburst focus:outline-none focus:ring-0;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-sunburst px-6 py-3 text-sm font-bold text-midnight transition hover:bg-sunburst-300 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-sunburst hover:text-sunburst;
   }
 }
 
 @layer utilities {
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
 
-  /* Minimal animations - only for interaction feedback */
-  .transition-fast {
-    transition-duration: 150ms;
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

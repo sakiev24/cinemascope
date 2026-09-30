@@ -13,19 +13,17 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
     }, [onClose]);
 
     return (
-        <div className="fixed top-20 right-4 z-50 animate-slide-in-top">
+        <div role="status" className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-slide-in">
             <div
-                className={`px-6 py-4 rounded-lg shadow-lg ${type === 'success'
-                        ? 'bg-green-500 text-white'
-                        : 'bg-red-500 text-white'
+                className={`flex items-center gap-3 rounded-full py-2 pl-2 pr-5 shadow-2xl shadow-black/40 ${type === 'success'
+                    ? 'bg-sunburst text-midnight'
+                    : 'bg-white text-midnight'
                     }`}
             >
-                <div className="flex items-center space-x-2">
-                    <span className="text-xl">
-                        {type === 'success' ? '✓' : '✕'}
-                    </span>
-                    <p className="font-medium">{message}</p>
-                </div>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-midnight text-sm font-bold text-sunburst">
+                    {type === 'success' ? '✓' : '!'}
+                </span>
+                <p className="text-sm font-semibold">{message}</p>
             </div>
         </div>
     );

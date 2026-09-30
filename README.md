@@ -1,6 +1,6 @@
 # CinemaScope
 
-A movie discovery app inspired by Letterboxd. Browse trending films, view details, and write reviews that save directly to your browser.
+A movie discovery and review app. Browse trending films, view details, and write reviews that save directly to your browser.
 
 ## Features
 
@@ -8,7 +8,7 @@ A movie discovery app inspired by Letterboxd. Browse trending films, view detail
 - **Search:** Find specific movies by title.
 - **Reviews:** Write star-rated reviews.
 - **Local Persistence:** Reviews are saved to Local Storage, so they survive page reloads.
-- **Dark Mode:** Clean, cinematic interface.
+- **Cinematic design:** A dark, two-color Sunburst (#F8C61E) & Midnight (#252C37) interface set in Inter.
 
 ## API Used
 
@@ -26,7 +26,7 @@ A movie discovery app inspired by Letterboxd. Browse trending films, view detail
 1.  **Clone the repository:**
     ```bash
     git clone <repository-url>
-    cd Letterboxd
+    cd cinemascope
     ```
 
 2.  **Install dependencies:**

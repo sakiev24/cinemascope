@@ -30,7 +30,7 @@ base: '/your-repo-name/',
 
 1. Go to [GitHub](https://github.com)
 2. Click the **"+"** icon → **"New repository"**
-3. Name your repository (e.g., `cinemascope` or `letterboxd`)
+3. Name your repository (e.g., `cinemascope`)
 4. Choose **Public** (required for free GitHub Pages)
 5. **DO NOT** initialize with README (you already have one)
 6. Click **"Create repository"**

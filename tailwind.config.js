@@ -4,37 +4,34 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // Exact Letterboxd color palette
-        light: {
-          bg: '#ffffff',
-          surface: '#f8f8f8',
-          text: '#2c3440',
-          'text-secondary': '#889',
-          border: '#e8e8e8',
-          accent: '#FF8000', // Letterboxd orange
-          green: '#00E054', // Letterboxd green
-          star: '#ffc107',
+        // Two-color palette: Sunburst + Midnight, with tints/shades of each
+        sunburst: {
+          DEFAULT: '#F8C61E',
+          50: '#FEF8E3',
+          100: '#FDEFBF',
+          200: '#FBE185',
+          300: '#FAD44F',
+          400: '#F8C61E',
+          500: '#E0AF0A',
+          600: '#B38B08',
         },
-        dark: {
-          bg: '#14171C', // Deep black/charcoal - Letterboxd authentic
-          surface: '#2C343F', // Charcoal gray for cards
-          'surface-hover': '#3a4250', // Subtle hover
-          text: '#FFFFFF', // Pure white for high contrast
-          'text-secondary': '#9ab', // Muted gray metadata
-          'text-tertiary': '#789',
-          border: '#2C343F',
-          accent: '#FF8000', // Vibrant orange for actions
-          'accent-hover': '#ff9500',
-          green: '#00E054', // Vibrant green for ratings/positive
-          star: '#ffc107', // Yellow stars
+        midnight: {
+          DEFAULT: '#252C37',
+          50: '#F3F4F6',
+          100: '#DDE0E6',
+          200: '#B7BDC8',
+          300: '#8C95A4',
+          400: '#646E7F',
+          500: '#465062',
+          600: '#363F4D',
+          700: '#2D3441',
+          800: '#252C37',
+          900: '#1C222B',
+          950: '#141820',
         },
-      },
-      borderRadius: {
-        'poster': '4px',
       },
       fontFamily: {
         sans: [
@@ -46,6 +43,23 @@ export default {
           'Roboto',
           'sans-serif',
         ],
+      },
+      letterSpacing: {
+        label: '0.25em',
+      },
+      keyframes: {
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(12px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-in': {
+          '0%': { opacity: '0', transform: 'translateY(-8px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+      },
+      animation: {
+        'fade-up': 'fade-up 0.5s ease-out both',
+        'slide-in': 'slide-in 0.25s ease-out both',
       },
     },
   },

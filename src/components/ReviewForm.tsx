@@ -8,8 +8,11 @@ interface ReviewFormProps {
     onShowToast: (message: string, type: 'success' | 'error') => void;
 }
 
+const ratingLabels = ['Awful', 'Meh', 'Good', 'Great', 'Masterpiece'];
+
 const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onShowToast }) => {
     const [rating, setRating] = useState(5);
+    const [hoverRating, setHoverRating] = useState<number | null>(null);
     const [text, setText] = useState('');
     const [author, setAuthor] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +54,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
             };
 
             await createReview(review);
-            onShowToast('Review submitted successfully!', 'success');
+            onShowToast('Review published', 'success');
 
             // Reset form
             setText('');
@@ -68,76 +71,73 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
         }
     };
 
-    const renderStarInput = () => {
-        return (
-            <div className="flex space-x-1">
-                {Array.from({ length: 5 }, (_, i) => (
-                    <button
-                        key={i}
-                        type="button"
-                        onClick={() => setRating(i + 1)}
-                        className="text-3xl focus:outline-none transition-transform hover:scale-110"
-                    >
-                        <span className={i < rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}>
-                            ★
-                        </span>
-                    </button>
-                ))}
-            </div>
-        );
-    };
+    const shownRating = hoverRating ?? rating;
 
     return (
-        <form onSubmit={handleSubmit} className="bg-light-surface dark:bg-dark-surface rounded-lg p-6 border border-light-border dark:border-dark-border">
-            <h3 className="text-xl font-semibold text-light-text dark:text-dark-text mb-4">
-                Write a Review
-            </h3>
+        <form onSubmit={handleSubmit} noValidate className="rounded-3xl bg-sunburst p-6 text-midnight sm:p-8">
+            <p className="label text-midnight/70">Your take</p>
+            <h3 className="display mt-2 text-3xl">Write a review</h3>
 
-            <div className="mb-4">
-                <label className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                    Your Name
+            <fieldset className="mt-6">
+                <legend className="mb-2 text-sm font-semibold">Rating</legend>
+                <div className="flex items-center gap-3" onMouseLeave={() => setHoverRating(null)}>
+                    <div className="flex">
+                        {Array.from({ length: 5 }, (_, i) => (
+                            <button
+                                key={i}
+                                type="button"
+                                onClick={() => setRating(i + 1)}
+                                onMouseEnter={() => setHoverRating(i + 1)}
+                                aria-label={`${i + 1} star${i ? 's' : ''}`}
+                                aria-pressed={rating === i + 1}
+                                className={`px-0.5 text-3xl leading-none transition-transform hover:scale-110 focus-visible:ring-offset-sunburst ${i < shownRating ? 'text-midnight' : 'text-midnight/20'}`}
+                            >
+                                ★
+                            </button>
+                        ))}
+                    </div>
+                    <span className="label text-[10px] text-midnight/70">{ratingLabels[shownRating - 1]}</span>
+                </div>
+            </fieldset>
+
+            <div className="mt-5">
+                <label htmlFor="review-author" className="mb-2 block text-sm font-semibold">
+                    Your name
                 </label>
                 <input
+                    id="review-author"
                     type="text"
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
-                    className="w-full px-4 py-2 bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text border border-light-border dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent"
-                    placeholder="Enter your name"
+                    className="w-full rounded-xl border-2 border-transparent bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
+                    placeholder="e.g. Alex"
+                    aria-invalid={!!errors.author}
                 />
-                {errors.author && (
-                    <p className="text-red-500 text-sm mt-1">{errors.author}</p>
-                )}
+                {errors.author && <p className="mt-1.5 text-xs font-semibold">⚠ {errors.author}</p>}
             </div>
 
-            <div className="mb-4">
-                <label className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                    Rating
-                </label>
-                {renderStarInput()}
-            </div>
-
-            <div className="mb-4">
-                <label className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                    Your Review
+            <div className="mt-5">
+                <label htmlFor="review-text" className="mb-2 block text-sm font-semibold">
+                    Your review
                 </label>
                 <textarea
+                    id="review-text"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    rows={4}
-                    className="w-full px-4 py-2 bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text border border-light-border dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent resize-none"
-                    placeholder="Share your thoughts about this movie..."
+                    rows={5}
+                    className="w-full resize-none rounded-xl border-2 border-transparent bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
+                    placeholder="What stayed with you after the credits rolled?"
+                    aria-invalid={!!errors.text}
                 />
-                {errors.text && (
-                    <p className="text-red-500 text-sm mt-1">{errors.text}</p>
-                )}
+                {errors.text && <p className="mt-1.5 text-xs font-semibold">⚠ {errors.text}</p>}
             </div>
 
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-6 py-3 bg-light-accent dark:bg-dark-accent text-white rounded-lg font-semibold hover:opacity-90 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-6 w-full rounded-full bg-midnight px-6 py-3.5 text-sm font-bold text-white transition hover:bg-midnight-950 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:ring-offset-sunburst"
             >
-                {isSubmitting ? 'Submitting...' : 'Submit Review'}
+                {isSubmitting ? 'Publishing…' : 'Publish review'}
             </button>
         </form>
     );

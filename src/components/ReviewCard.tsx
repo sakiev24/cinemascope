@@ -1,45 +1,37 @@
 import React from 'react';
 import type { Review } from '../types';
+import Stars from './Stars';
 
 interface ReviewCardProps {
     review: Review;
+    children?: React.ReactNode;
 }
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
-    const renderStars = (rating: number) => {
-        return Array.from({ length: 5 }, (_, i) => (
-            <span key={i} className={i < rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}>
-                ★
-            </span>
-        ));
-    };
+const formatDate = (timestamp: string) =>
+    new Date(timestamp).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
 
-    const formatDate = (timestamp: string) => {
-        return new Date(timestamp).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    };
-
+const ReviewCard: React.FC<ReviewCardProps> = ({ review, children }) => {
     return (
-        <div className="bg-light-surface dark:bg-dark-surface rounded-lg p-6 border border-light-border dark:border-dark-border">
-            <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                    <div className="w-10 h-10 rounded-full bg-light-accent dark:bg-dark-accent flex items-center justify-center text-white font-semibold">
+        <article className="rounded-3xl border border-white/5 bg-midnight-900 p-6 transition-colors hover:border-white/10">
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sunburst text-sm font-extrabold text-midnight">
                         {review.author.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                        <p className="font-semibold text-light-text dark:text-dark-text">{review.author}</p>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                            {formatDate(review.timestamp)}
-                        </p>
+                        <p className="font-semibold text-white">{review.author}</p>
+                        <p className="label text-[10px] text-midnight-300">{formatDate(review.timestamp)}</p>
                     </div>
                 </div>
-                <div className="flex text-xl">{renderStars(review.rating)}</div>
+                <Stars rating={review.rating} className="text-lg" />
             </div>
-            <p className="text-light-text dark:text-dark-text leading-relaxed">{review.text}</p>
-        </div>
+            {children}
+            <p className="mt-4 whitespace-pre-line leading-relaxed text-midnight-100">{review.text}</p>
+        </article>
     );
 };
 

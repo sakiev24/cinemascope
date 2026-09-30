@@ -22,6 +22,15 @@ export const getReviewsByMovieId = async (movieId: number): Promise<Review[]> =>
     return allReviews.filter(review => review.movieId === movieId);
 };
 
+export const getAllReviews = async (): Promise<Review[]> => {
+    // Simulate async network call
+    await new Promise(resolve => setTimeout(resolve, MOCK_DELAY));
+
+    return getStoredReviews().sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+};
+
 export const createReview = async (reviewData: Omit<Review, 'id'>): Promise<Review> => {
     // Simulate async network call
     await new Promise(resolve => setTimeout(resolve, MOCK_DELAY));
