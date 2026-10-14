@@ -9,6 +9,7 @@ import ReviewForm from '../components/ReviewForm';
 import Toast from '../components/Toast';
 import Poster from '../components/Poster';
 import Stars from '../components/Stars';
+import { useTextsReveal } from '../hooks/useMotion';
 
 const MovieDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -51,6 +52,7 @@ const MovieDetailPage: React.FC = () => {
     };
 
     const closeToast = useCallback(() => setToast(null), []);
+    const heroRef = useTextsReveal<HTMLDivElement>(movie?.id);
 
     useEffect(() => {
         fetchMovieData();
@@ -89,7 +91,7 @@ const MovieDetailPage: React.FC = () => {
 
     return (
         <div>
-            {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
+            {toast && <Toast key={`${toast.type}:${toast.message}`} message={toast.message} type={toast.type} onClose={closeToast} />}
 
             {/* Backdrop */}
             <div className="relative isolate">
@@ -106,19 +108,20 @@ const MovieDetailPage: React.FC = () => {
                         ← All films
                     </Link>
 
-                    <div className="mt-8 flex animate-fade-up flex-col gap-10 md:flex-row md:items-end">
-                        <div className="w-52 shrink-0 overflow-hidden rounded-3xl shadow-2xl shadow-black/50 ring-1 ring-white/10 sm:w-64 md:w-72">
+                    <div ref={heroRef} className="t-stagger mt-8 flex flex-col gap-10 md:flex-row md:items-end">
+                        <div className="t-stagger-line t-stagger-line--1 w-52 shrink-0 overflow-hidden rounded-3xl shadow-2xl shadow-black/50 ring-1 ring-white/10 sm:w-64 md:w-72">
                             <Poster src={getImageUrl(movie.poster_path, 'w780')} title={movie.title} eager />
                         </div>
 
                         <div className="flex-1 pb-2">
-                            {year && <p className="label text-sunburst">{year}</p>}
-                            <h1 className="display mt-3 text-5xl text-white sm:text-6xl lg:text-7xl">{movie.title}</h1>
+                            {year && <p className="t-stagger-line t-stagger-line--2 label text-sunburst">{year}</p>}
+                            <h1 className="t-stagger-line t-stagger-line--3 display mt-3 text-5xl text-white sm:text-6xl lg:text-7xl">{movie.title}</h1>
                             {movie.tagline && (
-                                <p className="mt-4 text-lg font-medium italic text-midnight-100">{movie.tagline}</p>
+                                <p className="t-stagger-line t-stagger-line--4 mt-4 text-lg font-medium italic text-midnight-100">{movie.tagline}</p>
                             )}
 
-                            <div className="mt-6 flex flex-wrap items-center gap-2">
+                            <div className="t-stagger-line t-stagger-line--5 mt-6">
+                            <div className="flex flex-wrap items-center gap-2">
                                 {movie.vote_average > 0 && (
                                     <span className="inline-flex items-center gap-1.5 rounded-full bg-sunburst px-3 py-1.5 text-sm font-bold text-midnight">
                                         ★ {movie.vote_average.toFixed(1)}
@@ -138,6 +141,7 @@ const MovieDetailPage: React.FC = () => {
                                         {genre.name}
                                     </span>
                                 ))}
+                            </div>
                             </div>
                         </div>
                     </div>

@@ -3,16 +3,18 @@ interface LogoMarkProps {
     tone?: 'sunburst' | 'midnight';
 }
 
-// Lens/aperture mark: a ring with a focal point
+// Widescreen C: a C whose opening is the 2.39:1 CinemaScope frame (masters live in brand/logo)
 export const LogoMark = ({ className = 'h-8 w-8', tone = 'sunburst' }: LogoMarkProps) => {
     const bg = tone === 'sunburst' ? '#F8C61E' : '#252C37';
     const fg = tone === 'sunburst' ? '#252C37' : '#F8C61E';
 
     return (
-        <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-            <rect width="32" height="32" rx="9" fill={bg} />
-            <circle cx="16" cy="16" r="8.5" fill="none" stroke={fg} strokeWidth="3" />
-            <circle cx="16" cy="16" r="2.5" fill={fg} />
+        <svg viewBox="0 0 256 256" className={className} aria-hidden="true">
+            <rect width="256" height="256" rx="56" fill={bg} />
+            <path
+                fill={fg}
+                d="M199.15 106.3A72.8 72.8 0 1 0 199.15 149.7H116.35A21.7 21.7 0 0 1 116.35 106.3Z"
+            />
         </svg>
     );
 };

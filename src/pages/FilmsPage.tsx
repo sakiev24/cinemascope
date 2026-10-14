@@ -7,6 +7,7 @@ import SkeletonLoader from '../components/SkeletonLoader';
 import ErrorMessage from '../components/ErrorMessage';
 import SearchBar from '../components/SearchBar';
 import GenreFilter from '../components/GenreFilter';
+import { useTextsReveal } from '../hooks/useMotion';
 
 const grid = 'grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
 
@@ -48,12 +49,13 @@ const FilmsPage: React.FC = () => {
 
     const heading = searchQuery ? `“${searchQuery}”` : selectedGenre ? 'By genre' : 'Popular';
     const eyebrow = searchQuery ? 'Search results' : 'Browse';
+    const headerRef = useTextsReveal<HTMLElement>(heading);
 
     return (
         <div className="mx-auto max-w-7xl px-4 pt-32 sm:px-6 lg:px-8">
-            <header className="animate-fade-up">
-                <p className="label text-sunburst">{eyebrow}</p>
-                <h1 className="display mt-3 break-words text-5xl text-white sm:text-7xl">{heading}</h1>
+            <header ref={headerRef} className="t-stagger">
+                <p className="t-stagger-line t-stagger-line--1 label text-sunburst">{eyebrow}</p>
+                <h1 className="t-stagger-line t-stagger-line--2 display mt-3 break-words text-5xl text-white sm:text-7xl">{heading}</h1>
             </header>
 
             <div className="mt-10 space-y-5">

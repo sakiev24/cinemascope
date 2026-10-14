@@ -1,0 +1,31 @@
+{
+  "brand": "CinemaScope",
+  "tagline": "Discover films, keep a diary, write reviews",
+  "brief": "A movie discovery and review site for film fans. The identity should feel cinematic, warm and confident, and stand apart from the red-dominated entertainment category.",
+  "adjectives": ["cinematic", "warm", "confident", "modern"],
+  "criteria": "Success: ownable in a category of reels and clapperboards, readable at 16 px, works in one colour, at home in Sunburst and Midnight.",
+  "mockups": ["website", "app-icon", "favicon-tab", "social", "tshirt", "sticker"],
+  "nav": ["Discover", "Films", "Reviews"],
+  "brand_color": "#F8C61E",
+  "tile_color": "#252C37",
+  "greyscale": false,
+  "designer": "CinemaScope",
+  "round": 2,
+  "concepts": [
+    {
+      "name": "Widescreen C",
+      "symbol": "../logo/symbol-sunburst.svg",
+      "lockup": "../logo/horizontal-on-light.svg",
+      "symbol_on_tile": "../logo/symbol-sunburst.svg",
+      "lockup_on_dark": "../logo/horizontal-on-dark.svg",
+      "idea": "A C whose opening is the exact 2.39:1 CinemaScope widescreen frame.",
+      "rationale": [
+        "Name and format in one shape: the letter is the screen",
+        "Two primitives (a disc and a stadium slot), so it holds at 16 px",
+        "Sunburst on Midnight is distinct in a red-heavy category"
+      ]
+    }
+  ],
+  "recommendation": "Widescreen C, refined: optical centring, an opened-up small-size cut, Inter ExtraBold wordmark.",
+  "next_steps": ["Trademark search before public launch", "Animate the slot opening as a loading/intro motif"]
+}

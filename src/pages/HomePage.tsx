@@ -4,6 +4,8 @@ import { getTrendingMovies, getNowPlayingMovies, getTopRatedMovies, getImageUrl 
 import type { Movie } from '../types';
 import MovieRow from '../components/MovieRow';
 import ErrorMessage from '../components/ErrorMessage';
+import LearnChevron from '../components/LearnChevron';
+import { useTextsReveal } from '../hooks/useMotion';
 
 const HomePage: React.FC = () => {
     const [trending, setTrending] = useState<Movie[]>([]);
@@ -40,6 +42,7 @@ const HomePage: React.FC = () => {
     const featured = trending.find((m) => m.backdrop_path) ?? null;
     const backdrop = featured ? getImageUrl(featured.backdrop_path, 'w1280') : null;
     const featuredYear = featured?.release_date ? new Date(featured.release_date).getFullYear() : null;
+    const heroRef = useTextsReveal<HTMLDivElement>(featured?.id);
 
     if (error) {
         return (
@@ -52,7 +55,7 @@ const HomePage: React.FC = () => {
     return (
         <div>
             {/* Hero */}
-            <section className="relative isolate flex min-h-[36rem] items-end lg:h-[88vh] lg:max-h-[56rem] overflow-hidden">
+            <section className="relative isolate flex min-h-[30rem] items-end overflow-hidden lg:h-[72vh] lg:max-h-[42rem]">
                 {backdrop ? (
                     <img
                         src={backdrop}
@@ -65,14 +68,15 @@ const HomePage: React.FC = () => {
                 <div className="absolute inset-0 -z-10 bg-gradient-to-t from-midnight via-midnight/70 to-midnight/20" />
                 <div className="absolute inset-0 -z-10 bg-gradient-to-r from-midnight/90 via-midnight/30 to-transparent" />
 
-                <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-32 sm:px-6 lg:px-8">
+                <div className="mx-auto w-full max-w-7xl px-4 pb-12 pt-28 sm:px-6 lg:px-8">
                     {featured ? (
-                        <div className="max-w-3xl animate-fade-up">
-                            <p className="label text-sunburst">#1 Trending this week</p>
-                            <h1 className="display mt-4 text-5xl text-white sm:text-7xl lg:text-8xl">
+                        <div ref={heroRef} className="t-stagger max-w-3xl">
+                            <p className="t-stagger-line t-stagger-line--1 label text-sunburst">#1 Trending this week</p>
+                            <h1 className="t-stagger-line t-stagger-line--2 display mt-3 text-4xl text-white sm:text-6xl lg:text-7xl">
                                 {featured.title}
                             </h1>
-                            <div className="mt-5 flex flex-wrap items-center gap-3 text-sm font-semibold text-midnight-100">
+                            <div className="t-stagger-line t-stagger-line--3 mt-4 text-sm font-semibold text-midnight-100">
+                            <div className="flex flex-wrap items-center gap-3">
                                 {featuredYear && <span>{featuredYear}</span>}
                                 {featured.vote_average > 0 && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-sunburst px-2.5 py-0.5 text-xs font-bold text-midnight">
@@ -80,21 +84,25 @@ const HomePage: React.FC = () => {
                                     </span>
                                 )}
                             </div>
+                            </div>
                             {featured.overview && (
-                                <p className="mt-5 line-clamp-3 max-w-xl text-base leading-relaxed text-midnight-100 sm:text-lg">
-                                    {featured.overview}
-                                </p>
+                                // Clamp lives on the inner <p>: the reveal line sets display: block, which would cancel line-clamp
+                                <div className="t-stagger-line t-stagger-line--4 mt-4">
+                                    <p className="line-clamp-2 max-w-xl text-base leading-relaxed text-midnight-100">
+                                        {featured.overview}
+                                    </p>
+                                </div>
                             )}
-                            <div className="mt-8 flex flex-wrap gap-3">
-                                <Link to={`/movie/${featured.id}`} className="btn-primary">
+                            <div className="t-stagger-line t-stagger-line--5 mt-6">
+                            <div className="flex flex-wrap gap-3">
+                                <Link to={`/movie/${featured.id}`} className="t-learn btn-primary">
                                     View film
-                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.4} viewBox="0 0 24 24" aria-hidden="true">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 5l7 7-7 7" />
-                                    </svg>
+                                    <LearnChevron />
                                 </Link>
                                 <Link to="/films" className="btn-ghost">
                                     Browse all films
                                 </Link>
+                            </div>
                             </div>
                         </div>
                     ) : (
@@ -114,27 +122,29 @@ const HomePage: React.FC = () => {
                 {/* Brand split, echoing the two-color palette */}
                 <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid overflow-hidden rounded-[2rem] md:grid-cols-2">
-                        <Link to="/films" className="group flex min-h-64 flex-col justify-between bg-sunburst p-8 text-midnight sm:p-10">
+                        <Link to="/films" className="t-learn t-learn-lg group flex min-h-64 flex-col justify-between bg-sunburst p-8 text-midnight sm:p-10">
                             <p className="label">Explore</p>
                             <div>
                                 <h2 className="display text-5xl sm:text-6xl">Find it.</h2>
                                 <p className="mt-3 max-w-sm font-medium text-midnight/75">
                                     Search thousands of films and filter by the genres you love.
                                 </p>
-                                <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold transition-transform group-hover:translate-x-1">
-                                    Browse films →
+                                <span className="mt-6 inline-flex items-center gap-1 text-sm font-bold">
+                                    Browse films
+                                    <LearnChevron />
                                 </span>
                             </div>
                         </Link>
-                        <Link to="/reviews" className="group flex min-h-64 flex-col justify-between bg-midnight-950 p-8 text-sunburst sm:p-10">
+                        <Link to="/reviews" className="t-learn t-learn-lg group flex min-h-64 flex-col justify-between bg-midnight-950 p-8 text-sunburst sm:p-10">
                             <p className="label">Remember</p>
                             <div>
                                 <h2 className="display text-5xl sm:text-6xl">Review it.</h2>
                                 <p className="mt-3 max-w-sm font-medium text-midnight-200">
                                     Rate what you watch and keep a personal diary of every take.
                                 </p>
-                                <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold transition-transform group-hover:translate-x-1">
-                                    Your reviews →
+                                <span className="mt-6 inline-flex items-center gap-1 text-sm font-bold">
+                                    Your reviews
+                                    <LearnChevron />
                                 </span>
                             </div>
                         </Link>

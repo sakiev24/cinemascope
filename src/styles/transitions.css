@@ -1,0 +1,366 @@
+/* Motion for CinemaScope, from the transitions.dev skill (.agents/skills/transitions-dev).
+   Snippets are pasted verbatim; site-specific tweaks live in "Project adaptations" at the end.
+   Imported after index.css so these rules win over Tailwind utilities on the same element. */
+
+:root {
+  /* Motion tokens */
+  --duration-stagger: 40ms;
+  --duration-micro: 80ms;
+  --duration-quick: 150ms;
+  --duration-fast: 250ms;
+  --duration-medium: 350ms;
+  --duration-slow: 400ms;
+  --duration-very-slow: 500ms;
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: ease-in-out;
+  --ease-out: ease-out;
+  --ease-linear: linear;
+
+  /* Text states swap */
+  --text-swap-dur: 150ms;
+  --text-swap-translate-y: 4px;
+  --text-swap-blur: 2px;
+  --text-swap-ease: ease-in-out;
+  /* Error state shake */
+  --shake-distance: 6px;
+  --shake-overshoot: 4px;
+  --shake-dur-a: 80ms;
+  --shake-dur-b: 60ms;
+  --shake-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --revert-hold: 3000ms;
+  --revert-dur: 280ms;
+  /* Skeleton loader and reveal */
+  --pulse-dur: 1000ms;
+  --pulse-count: 1;
+  --pulse-min: 0.5;
+  --reveal-dur: 400ms;
+  --reveal-blur: 2px;
+  --reveal-ease: ease-in-out;
+  /* Tabs sliding */
+  --tabs-dur: 250ms;
+  --tabs-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Texts reveal */
+  --stagger-dur: 500ms;
+  --stagger-distance: 12px;
+  --stagger-stagger: 40ms;
+  --stagger-blur: 3px;
+  --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Card hover tilt */
+  --tilt-perspective: 1000px;
+  --tilt-return: 1000ms;
+  --tilt-return-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tilt-follow: 400ms;
+  --tilt-follow-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tilt-glare-opacity: 0.32;
+  --tilt-glare-fade: 300ms;
+  --tilt-glare-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Toast */
+  --toast-open: 350ms;
+  --toast-close: 250ms;
+  --toast-distance: 16px;
+  --toast-blur: 2px;
+  --toast-scale: 0.97;
+  --toast-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Learn more hover */
+  --learn-shift: 2px;
+  --learn-spread: 8deg;
+  --learn-in: 350ms;
+  --learn-out: 350ms;
+  --learn-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── 04 Text states swap ─────────────────────────────────────── */
+.t-text-swap {
+  display: inline-block;
+  transform: translateY(0);
+  filter: blur(0);
+  opacity: 1;
+  transition:
+    transform var(--text-swap-dur) var(--text-swap-ease),
+    filter    var(--text-swap-dur) var(--text-swap-ease),
+    opacity   var(--text-swap-dur) var(--text-swap-ease);
+  will-change: transform, filter, opacity;
+}
+.t-text-swap.is-exit {
+  transform: translateY(calc(var(--text-swap-translate-y) * -1));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+}
+.t-text-swap.is-enter-start {
+  transform: translateY(var(--text-swap-translate-y));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-text-swap { transition: none !important; }
+}
+
+/* ── 12 Error state shake ────────────────────────────────────── */
+.t-input {
+  transition: border-color 150ms ease-out;
+  will-change: transform;
+}
+.t-input.is-error {
+  transition: border-color var(--revert-dur, 280ms) ease-out;
+}
+
+.t-error-msg {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity    var(--revert-dur, 280ms) ease-out,
+    visibility 0s linear var(--revert-dur, 280ms);
+}
+.t-input-wrap.is-error .t-error-msg {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity    var(--revert-dur, 280ms) ease-out,
+    visibility 0s linear 0s;
+}
+
+.t-input.is-shaking {
+  animation: t-input-shake calc(
+      var(--shake-dur-a) * 2 + var(--shake-dur-b) * 2
+    ) linear;
+}
+@keyframes t-input-shake {
+  0%      { transform: translateX(0);                                 animation-timing-function: var(--shake-ease); }
+  28.57%  { transform: translateX(var(--shake-distance));             animation-timing-function: var(--shake-ease); }
+  57.14%  { transform: translateX(calc(var(--shake-distance) * -1)); animation-timing-function: var(--shake-ease); }
+  78.57%  { transform: translateX(var(--shake-overshoot));            animation-timing-function: var(--shake-ease); }
+  100%    { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-input { animation: none !important; transform: none !important; }
+}
+
+/* ── 14 Skeleton loader and reveal ───────────────────────────── */
+.t-skel { position: relative; }
+.t-skel-skeleton,
+.t-skel-content {
+  position: absolute;
+  inset: 0;
+}
+
+.t-skel-skeleton {
+  z-index: 1;
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    filter  var(--reveal-dur) var(--reveal-ease);
+}
+.t-skel-content {
+  z-index: 2;
+  opacity: 0;
+  filter: blur(var(--reveal-blur));
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    filter  var(--reveal-dur) var(--reveal-ease);
+}
+.t-skel.is-revealed .t-skel-skeleton {
+  opacity: 0;
+  filter: blur(var(--reveal-blur));
+}
+.t-skel.is-revealed .t-skel-content {
+  opacity: 1;
+  filter: blur(0);
+}
+.t-skel.is-resetting .t-skel-skeleton,
+.t-skel.is-resetting .t-skel-content {
+  transition: none !important;
+}
+
+.t-skel-skeleton.is-pulsing > * {
+  animation: t-skel-pulse var(--pulse-dur) ease-in-out var(--pulse-count);
+}
+@keyframes t-skel-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: var(--pulse-min); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-skel-skeleton, .t-skel-content {
+    transition: none !important;
+  }
+  .t-skel-skeleton.is-pulsing > * { animation: none !important; }
+}
+
+/* ── 16 Tabs sliding (pill only; the nav supplies its own bar + tabs) ── */
+.t-tabs-pill {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 30px;
+  width: 0;
+  background: var(--tabs-pill-bg);
+  border-radius: 48px;
+  transform: translateX(0);
+  transition:
+    transform var(--tabs-dur) var(--tabs-ease),
+    width     var(--tabs-dur) var(--tabs-ease);
+  will-change: transform, width;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-tabs-pill, .t-tab { transition: none !important; }
+}
+
+/* ── 18 Texts reveal ─────────────────────────────────────────── */
+.t-stagger-line {
+  display: block;
+  opacity: 0;
+  transform: translateY(var(--stagger-distance));
+  filter: blur(var(--stagger-blur));
+  transition:
+    opacity   var(--stagger-dur) var(--stagger-ease),
+    transform var(--stagger-dur) var(--stagger-ease),
+    filter    var(--stagger-dur) var(--stagger-ease);
+  will-change: transform, opacity, filter;
+}
+.t-stagger-line--2 { transition-delay: var(--stagger-stagger); }
+.t-stagger-line--3 { transition-delay: calc(var(--stagger-stagger) * 2); }
+.t-stagger-line--4 { transition-delay: calc(var(--stagger-stagger) * 3); }
+.t-stagger-line--5 { transition-delay: calc(var(--stagger-stagger) * 4); }
+
+.t-stagger.is-shown .t-stagger-line {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.t-stagger.is-hiding .t-stagger-line {
+  opacity: 0;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity 200ms ease,
+    transform 0s linear,
+    filter 0s linear;
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-stagger-line { transition: none !important; }
+}
+
+/* ── 19 Card hover tilt ──────────────────────────────────────── */
+.t-tilt { touch-action: none; }
+.t-tilt-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  transform:
+    perspective(var(--tilt-perspective))
+    rotateX(var(--tilt-rx, 0deg))
+    rotateY(var(--tilt-ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform var(--tilt-return) var(--tilt-return-ease);
+  will-change: transform;
+}
+.t-tilt-card.is-tilting {
+  transition: transform var(--tilt-follow) var(--tilt-follow-ease);
+}
+.t-tilt-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle 95px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgba(255,255,255,0.48), rgba(255,255,255,0.06) 52%, rgba(255,255,255,0) 84%),
+    radial-gradient(circle 200px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgba(255,255,255,0.22), rgba(255,255,255,0.04) 58%, rgba(255,255,255,0) 78%),
+    radial-gradient(circle 360px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgba(255,255,255,0.10), rgba(255,255,255,0) 88%);
+  transition: opacity var(--tilt-glare-fade) var(--tilt-glare-ease);
+}
+.t-tilt.is-hover .t-tilt-glare { opacity: var(--tilt-glare-opacity); }
+
+@media (prefers-reduced-motion: reduce) {
+  .t-tilt-card { transform: none !important; transition: none !important; }
+}
+
+/* ── 22 Toast ────────────────────────────────────────────────── */
+.t-toast {
+  opacity: 0;
+  transform: translateY(var(--toast-distance)) scale(var(--toast-scale));
+  filter: blur(var(--toast-blur));
+  will-change: transform, opacity, filter;
+  transition:
+    opacity var(--toast-close) var(--toast-ease),
+    transform var(--toast-close) var(--toast-ease),
+    filter var(--toast-close) var(--toast-ease);
+}
+.t-toast.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  transition:
+    opacity var(--toast-open) var(--toast-ease),
+    transform var(--toast-open) var(--toast-ease),
+    filter var(--toast-open) var(--toast-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-toast { transition: none !important; }
+}
+
+/* ── 24 Learn more hover ─────────────────────────────────────── */
+.t-learn-chevron {
+  display: inline-flex;
+  transform: translateX(0);
+  transition: transform var(--learn-out) var(--learn-ease);
+}
+.t-learn-arm {
+  transform-box: view-box;
+  transform-origin: 10px 8px;
+  vector-effect: non-scaling-stroke;
+  transition: transform var(--learn-out) var(--learn-ease);
+}
+.t-learn:hover .t-learn-chevron { transform: translateX(var(--learn-shift)); transition-duration: var(--learn-in); }
+.t-learn:hover .t-learn-arm { transition-duration: var(--learn-in); }
+.t-learn:hover .t-learn-arm-top { transform: rotate(var(--learn-spread)); }
+.t-learn:hover .t-learn-arm-bot { transform: rotate(calc(var(--learn-spread) * -1)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .t-learn-chevron, .t-learn-arm { transition: none !important; }
+}
+
+/* ── Project adaptations ─────────────────────────────────────── */
+
+/* Nav pill: full height of the nav links, Sunburst like the old active state */
+.nav-tabs .t-tabs-pill {
+  top: 0;
+  height: 100%;
+  background: #F8C61E;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.nav-tabs .t-tabs-pill[data-hidden] { opacity: 0; }
+
+/* Poster cards: keep the rounded-2xl corners and let the hover ring (box-shadow) fade too.
+   Rows scroll sideways on phones, so tilt is mouse-only and touch keeps native scrolling. */
+.poster-tilt { touch-action: auto; }
+.poster-tilt .t-tilt-card {
+  border-radius: 1rem;
+  transition:
+    transform var(--tilt-return) var(--tilt-return-ease),
+    box-shadow 300ms ease;
+}
+.poster-tilt .t-tilt-card.is-tilting {
+  transition:
+    transform var(--tilt-follow) var(--tilt-follow-ease),
+    box-shadow 300ms ease;
+}
+
+/* Posters can take a while: keep pulsing until the image arrives */
+.poster-skel { --pulse-count: infinite; }
+
+/* Learn-more chevrons on the bolder CTAs: a slightly longer slide */
+.t-learn-lg { --learn-shift: 4px; }

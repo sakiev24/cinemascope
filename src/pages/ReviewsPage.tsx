@@ -5,11 +5,13 @@ import { getMovieDetails, getImageUrl } from '../services/tmdbApi';
 import type { MovieDetails, Review } from '../types';
 import ReviewCard from '../components/ReviewCard';
 import Poster from '../components/Poster';
+import { useTextsReveal } from '../hooks/useMotion';
 
 const ReviewsPage: React.FC = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [movies, setMovies] = useState<Record<number, MovieDetails>>({});
     const [loading, setLoading] = useState(true);
+    const headerRef = useTextsReveal<HTMLElement>();
 
     useEffect(() => {
         const load = async () => {
@@ -40,10 +42,10 @@ const ReviewsPage: React.FC = () => {
 
     return (
         <div className="mx-auto max-w-4xl px-4 pt-32 sm:px-6 lg:px-8">
-            <header className="animate-fade-up">
-                <p className="label text-sunburst">Your diary</p>
-                <h1 className="display mt-3 text-5xl text-white sm:text-7xl">Reviews</h1>
-                <p className="mt-4 max-w-lg text-midnight-200">
+            <header ref={headerRef} className="t-stagger">
+                <p className="t-stagger-line t-stagger-line--1 label text-sunburst">Your diary</p>
+                <h1 className="t-stagger-line t-stagger-line--2 display mt-3 text-5xl text-white sm:text-7xl">Reviews</h1>
+                <p className="t-stagger-line t-stagger-line--3 mt-4 max-w-lg text-midnight-200">
                     Every review you write is saved on this device. Here’s everything you’ve logged so far.
                 </p>
             </header>

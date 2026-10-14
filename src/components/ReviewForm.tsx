@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { createReview } from '../services/reviewApi';
 import type { Review } from '../types';
+import { shake, useTextSwap } from '../hooks/useMotion';
 
 interface ReviewFormProps {
     movieId: number;
@@ -17,6 +18,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
     const [author, setAuthor] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<{ text?: string; author?: string }>({});
+    const authorRef = useRef<HTMLInputElement>(null);
+    const textRef = useRef<HTMLTextAreaElement>(null);
+    const [labelRef, submitLabel] = useTextSwap(isSubmitting ? 'Publishing…' : 'Publish review');
 
     const validate = () => {
         const newErrors: { text?: string; author?: string } = {};
@@ -32,6 +36,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
         }
 
         setErrors(newErrors);
+        // Error state shake: replay on every failed submit
+        if (newErrors.author) shake(authorRef.current);
+        if (newErrors.text) shake(textRef.current);
         return Object.keys(newErrors).length === 0;
     };
 
@@ -100,7 +107,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
                 </div>
             </fieldset>
 
-            <div className="mt-5">
+            <div className={`t-input-wrap mt-5 ${errors.author ? 'is-error' : ''}`}>
                 <label htmlFor="review-author" className="mb-2 block text-sm font-semibold">
                     Your name
                 </label>
@@ -108,30 +115,42 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
                     id="review-author"
                     type="text"
                     value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    className="w-full rounded-xl border-2 border-transparent bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
+                    ref={authorRef}
+                    onChange={(e) => {
+                        setAuthor(e.target.value);
+                        if (errors.author) setErrors((prev) => ({ ...prev, author: undefined }));
+                    }}
+                    className="t-input w-full rounded-xl border-2 border-transparent aria-[invalid=true]:border-midnight bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
                     placeholder="e.g. Alex"
                     maxLength={40}
                     aria-invalid={!!errors.author}
                 />
-                {errors.author && <p className="mt-1.5 text-xs font-semibold">⚠ {errors.author}</p>}
+                <p className="t-error-msg mt-1.5 min-h-4 text-xs font-semibold" aria-live="polite">
+                    {errors.author && `⚠ ${errors.author}`}
+                </p>
             </div>
 
-            <div className="mt-5">
+            <div className={`t-input-wrap mt-5 ${errors.text ? 'is-error' : ''}`}>
                 <label htmlFor="review-text" className="mb-2 block text-sm font-semibold">
                     Your review
                 </label>
                 <textarea
                     id="review-text"
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    ref={textRef}
+                    onChange={(e) => {
+                        setText(e.target.value);
+                        if (errors.text) setErrors((prev) => ({ ...prev, text: undefined }));
+                    }}
                     rows={5}
                     maxLength={1000}
-                    className="w-full resize-none rounded-xl border-2 border-transparent bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
+                    className="t-input w-full resize-none rounded-xl border-2 border-transparent aria-[invalid=true]:border-midnight bg-white/60 px-4 py-3 text-sm text-midnight placeholder:text-midnight/50 transition focus:border-midnight focus:bg-white/80 focus:outline-none"
                     placeholder="What stayed with you after the credits rolled?"
                     aria-invalid={!!errors.text}
                 />
-                {errors.text && <p className="mt-1.5 text-xs font-semibold">⚠ {errors.text}</p>}
+                <p className="t-error-msg mt-1.5 min-h-4 text-xs font-semibold" aria-live="polite">
+                    {errors.text && `⚠ ${errors.text}`}
+                </p>
             </div>
 
             <button
@@ -139,7 +158,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ movieId, onReviewSubmitted, onS
                 disabled={isSubmitting}
                 className="mt-6 w-full rounded-full bg-midnight px-6 py-3.5 text-sm font-bold text-white transition hover:bg-midnight-950 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:ring-offset-sunburst"
             >
-                {isSubmitting ? 'Publishing…' : 'Publish review'}
+                <span ref={labelRef} className="t-text-swap">{submitLabel}</span>
             </button>
         </form>
     );

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { LogoMark } from './Logo';
 
 const links = [
@@ -24,8 +24,51 @@ const useScrolled = () => {
     return scrolled;
 };
 
+// Tabs sliding: one Sunburst pill glides to whichever nav link is active
+const useNavPill = () => {
+    const listRef = useRef<HTMLUListElement>(null);
+    const pillRef = useRef<HTMLLIElement>(null);
+    const { pathname } = useLocation();
+    const placed = useRef(false);
+
+    useLayoutEffect(() => {
+        const list = listRef.current;
+        const pill = pillRef.current;
+        if (!list || !pill) return;
+
+        const moveTo = (animate: boolean) => {
+            const tab = list.querySelector<HTMLElement>('a[aria-current="page"]');
+            if (!tab) {
+                pill.dataset.hidden = '';
+                return;
+            }
+            // First placement (or coming back from no active link) snaps instead of sliding in from 0
+            const snap = !animate || !placed.current || 'hidden' in pill.dataset;
+            delete pill.dataset.hidden;
+            const prev = pill.style.transition;
+            if (snap) pill.style.transition = 'none';
+            pill.style.transform = `translateX(${tab.offsetLeft}px)`;
+            pill.style.width = `${tab.offsetWidth}px`;
+            if (snap) {
+                void pill.offsetWidth;
+                pill.style.transition = prev;
+            }
+            placed.current = true;
+        };
+
+        moveTo(true);
+        // Re-measure without animating when widths change (resize, web font swap)
+        const observer = new ResizeObserver(() => moveTo(false));
+        observer.observe(list);
+        return () => observer.disconnect();
+    }, [pathname]);
+
+    return { listRef, pillRef };
+};
+
 const Header = () => {
     const glass = useScrolled();
+    const { listRef, pillRef } = useNavPill();
 
     return (
         <header className="fixed inset-x-0 top-3 z-50 flex justify-center px-4 pointer-events-none">
@@ -52,15 +95,16 @@ const Header = () => {
                     className={`mx-1 hidden h-5 w-px transition-colors duration-300 md:block ${glass ? 'bg-white/20' : 'bg-midnight/15'}`}
                 />
 
-                <ul className="hidden items-center gap-0.5 md:flex">
+                <ul ref={listRef} className="nav-tabs relative hidden items-center gap-0.5 md:flex">
+                    <li ref={pillRef} className="t-tabs-pill" role="presentation" aria-hidden="true" data-hidden="" />
                     {links.map(({ to, label, end }) => (
                         <li key={to}>
                             <NavLink
                                 to={to}
                                 end={end}
                                 className={({ isActive }) =>
-                                    `block rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${isActive
-                                        ? 'bg-sunburst text-midnight shadow-sm'
+                                    `relative z-10 block rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${isActive
+                                        ? 'text-midnight'
                                         : glass
                                             ? 'text-white/75 hover:bg-white/10 hover:text-white'
                                             : 'text-midnight/70 hover:bg-midnight/5 hover:text-midnight'
